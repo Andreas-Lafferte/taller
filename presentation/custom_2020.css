@@ -508,7 +508,16 @@ iframe {
   background-color: #E0343E;
 }
 
+.box-5,
+.section-title-5 {
+  background-color: #bc1d4e;
+}
+
 .box-4{
+  color: #FFFFFF;
+}
+
+.box-5{
   color: #FFFFFF;
 }
 

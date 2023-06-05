@@ -28,15 +28,6 @@ lang: es-CL
 ---
 
 
-```{r database, message=TRUE, warning=TRUE, include=FALSE, paged.print=TRUE}
-
-
-
-```
-
-
-
-
 ```{r xaringanExtra1, include=FALSE}
 xaringanExtra::use_xaringan_extra(c("tile_view", "share_again", "scribble"))
 ```
@@ -104,11 +95,10 @@ class: inverse middle center, slideInRight
 
 
 .medium[ 
-1. 
-2. 
-3. 
-4. 
-5. 
+1. Flujo de trabajo reproducible
+2. Procesamiento, limpieza y manipulación de datos
+3. Análisis descriptivo de datos
+ 
 ]
 
 
@@ -117,6 +107,755 @@ class: inverse middle center, slideInRight
 background-size: 12%
 background-position: 99% 1%
 
-## 1. 
+## 1. Flujo de trabajo reproducible en R
 
 ---
+# Flujo de trabajo reproducible
+
+En este curso trabajaremos R con un flujo de trabajo reproducible, basado en el sistema [IPO](https://lisa-coes.com/ipo-data/). Lleva este nombre por el sistema de carpetas que se implementan: **I**nput, **P**rocesamiento y **O**utput. 
+
+```{r echo=FALSE, warning=FALSE, out.width="70%", fig.align='center'}
+
+knitr::include_graphics("../images/image (2).png", error = FALSE)
+```
+
+---
+# Reproducibilidad
+
+Por temas de orden y reproducibilidad, en este curso vamos a separar en dos momentos el trabajo con datos, y dos archivos de código correspondientes:
+
+.pull-left[
+
+.content-box-red.large[
+
+.red.bold.center[Preparación]
+
+Corresponde a lo que se conoce generalmente como “limpieza”, es decir, realizar las modificaciones necesarias a los datos para poder efectuar los análisis.
+
+]
+
+
+]
+
+.pull-right[
+
+.content-box-red.large[
+
+.red.bold.center[Análisis]
+
+Se relaciona con análisis estadísticos, en este caso descriptivos, asociados a las preguntas e hipótesis de investigación.
+
+
+]
+
+
+]
+
+
+
+---
+# Reproducibilidad
+
+.center[
+![:scale 80%](../images/image.png)
+]
+
+---
+# Reproducibilidad... ¿pero cómo?
+
+Mediante los **Rproject**. Los proyectos en R serán el centro a partir del cual estaremos trabajando el resto de archivos incluidos en nuestro trabajo con los datos (Input, Procesamiento y Output). 
+
+```{r echo=FALSE, warning=FALSE, out.width="60%", fig.align='center'}
+
+knitr::include_graphics("../images/cora1.png", error = FALSE)
+```
+
+
+---
+class: inverse middle center, slideInRight
+background-size: 12%
+background-position: 99% 1%
+
+## 2. Procesamiento, limpieza y manipulación de datos
+
+---
+
+# Procesamiento de datos
+
+<br>
+
+--
+
+.pull-left[
+
+.box-4.xlarge.sp-after-half[
+Comúnmente, un procesamiento de datos comprende una serie de etapas que van desde la importación de los datos, la limpieza, derivación de nuevas variables, hasta guardar y exportar. 
+
+]
+]
+
+<br><br> 
+
+--
+.pull-right[
+
+.box-5.xlarge.sp-after-half[
+Pero en R, para poder realizar todo lo anterior **primero debemos instalar y cargar los paquetes y librerías**.
+
+]
+]
+
+
+
+---
+
+# Procesamiento de datos
+
+El flujo que seguiremos es el siguiente:
+
+.content-box-red.large[
+1. Instalar y cargar librerías
+2. Importar datos
+3. Explorar datos
+4. Limpiar datos
+      + seleccionar y filtrar
+      + recodificar
+      + etiquetar
+      + tratamiento de casos perdidos (identificar y remover missing values)
+5. Transformar variables
+6. Guardar y exportar datos procesados
+
+]
+
+
+---
+# 1. Instalar y cargar librerías
+
+Los paquetes son un conjunto de funciones o herramientas que pueden ser usadas en R.
+
+Los directorios de R donde se almacenan se llaman librerías. 
+
+La lógica es instalar paquetes y luego cargar (o llamar) librerías cada vez que las usemos.
+
+Usualmente para cargar paquetes lo hacemos de la siguiente manera:
+
+```{r eval=FALSE, include=TRUE}
+install.packages("paquete")
+library(paquete)
+```
+---
+# 1. Instalar y cargar librerías
+
+Pero en esta ocasión utilizaremos un paquete llamado **pacman**, que facilita y agiliza la lectura (instalación y carga):
+
+```{r eval=FALSE, include=TRUE}
+install.packages("pacman")
+library(pacman)
+```
+
+En este taller, usaremos seis paquetes: `pacman`, `tidyverse`, `dplyr`, `haven`, `car`, `magrittr`.
+
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, include=TRUE}
+pacman::p_load(tidyverse, # colección de paquetes para manipulación de datos
+               dplyr, # para manipular datos
+               haven, # para importar datos
+               car, # para recodificar datos
+               magrittr)# para manipular datos
+
+```
+
+---
+# 1. Instalar y cargar librerías
+
+También es recomendable configurar ciertas opciones de la sesión:
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, include=TRUE}
+options(scipen = 999) # para desactivar notacion cientifica
+rm(list = ls()) # para limpiar el entorno de trabajo
+```
+
+
+---
+# 2. Importar datos
+
+La estructura general para importar datos es la siguiente:
+
+`read_*("ruta_hacia_archivo/nombre_archivo.*")`
+
+```{r eval=FALSE, include=TRUE}
+elsoc_2022 <- read_sav("ELSOC W06 v1.0 SPSS.sav")  # No funciona
+
+elsoc_2022 <- read_sav("input/data/ELSOC W06 v1.0 SPSS.sav") # No funciona
+
+elsoc_2022 <- read_sav("input/data/ELSOC_W06_v1.0_SPSS.sav") # Si funciona!
+
+```
+
+```{r include=FALSE}
+
+elsoc_2022 <- haven::read_sav("/Users/macbookair/Documents/GitHub/taller/input/data/ELSOC_W06_v1.0_SPSS.sav")
+
+```
+---
+# 3. Explorar datos
+
+En R, las funciones más comunes para explorar datos son: 
+
+```{r eval = T, include=TRUE, message=FALSE, collapse=FALSE}
+names(elsoc_2022) # Nombre de columnas
+dim(elsoc_2022) # Dimensiones
+
+```
+---
+# 3. Explorar datos
+
+```{r eval = T, include=TRUE, message=FALSE, collapse=FALSE}
+str(elsoc_2022) # Estructura de los datos (las clases y categorias de repuesta)
+
+```
+
+---
+# 4. Limpieza de datos
+
+Pero antes...
+
+.pull-left[
+
+![:scale 90%](../images/dplyr.jpg)
+
+
+]
+
+.pull-right[
+
+`dplyr()` está orientado a escribir código como la escritura normal, es decir, **de izquierda a derecha**. 
+
+Generalmente, la estructura de `dplyr()` es:
+
+
+`dplyr::funcion(datos, variable1, variable2, variable_n)`
+
+]
+
+---
+## 4.1 Seleccionar
+
+Hay distintas formas de usar `select()`
+
+Por .bold[indexación o ubicación] en la base de datos:
+
+```{r eval=FALSE, include=TRUE, collapse=FALSE}
+elsoc_2022 %>% dplyr::select(1, 2) # la primera y la segunda columna
+
+elsoc_2022 %>% dplyr::select(1:4) # la primera hasta la cuarta columna
+
+elsoc_2022 %>% dplyr::select(c(1, 4, 5)) # la primera, la cuarta y la quinta columna
+
+```
+
+---
+## 4.1 Seleccionar
+
+Por .bold[nombre] de la variable/columna. 
+
+```{r eval=FALSE, include=TRUE,}
+elsoc_2022 %>% 
+  dplyr::select(m0_sexo, m0_edad, m13)
+```
+
+.bold[Renombrar las variables] al momento de seleccionarlas
+
+```{r eval=FALSE, include=TRUE,}
+elsoc_2022 %>% 
+  dplyr::select(sexo = m0_sexo, edad = m0_edad, ingreso = m13)
+
+```
+
+Para .bold[reordenar].
+
+```{r eval=FALSE, include=TRUE,}
+elsoc_2022 %>% 
+  dplyr::select(m0_edad, m0_sexo, c25, m13)
+```
+
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+```{r eval=TRUE, include=TRUE, message=FALSE}
+proc_elsoc <- elsoc_2022 %>% 
+  dplyr::select(edad = m0_edad,
+                sexo = m0_sexo,
+                ingreso = m13,
+                altruismo = c03,
+                confianza_carab = c05_03)
+
+proc_elsoc
+```
+
+
+
+---
+# 4.2 Filtrar
+
+Usamos `filter()` .bold[especificando las condiciones que queremos aplicar]
+
+```{r eval=FALSE, include=TRUE,}
+proc_elsoc %>% 
+  dplyr::filter(autor_democ == 1)
+```
+
+También podemos agregar .bold[muchas condiciones] para filtrar nuestros datos.
+
+
+```{r eval=FALSE, include=TRUE,}
+proc_elsoc %>% 
+  dplyr::filter(autor_democ == 1 & edad >= 25)
+```
+
+¿Y si son character o factor?
+
+```{r eval=FALSE, include=TRUE,}
+proc_elsoc %>% 
+  dplyr::filter(sexo == "Mujer")
+
+```
+
+---
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+```{r eval=TRUE, include=TRUE, message=FALSE}
+proc_elsoc <- proc_elsoc %>% dplyr::filter(edad >= 25)
+
+proc_elsoc
+```
+
+---
+# 4.3 Recodificar
+
+Hay múltiples formas de recodificar en R, pero en este ejemplo trabajaremos con el comando `recode()` del paquete `car`. Esto, mediante `mutate()`
+
+El comando `recode()` generalmente sigue esta estructura:
+
+`car::recode(datos$variable, recodes = c('valor_orig1=nuevo_valor1;valor_org2=nuevo_valor2'))`
+
+
+```{r eval=FALSE, include=TRUE, collapse=FALSE, message=FALSE}
+proc_elsoc %>%
+  dplyr::mutate(sexo = car::recode(sexo, recodes = c("'Hombre' = 'Masculino';
+                                                   'Mujer' = 'Femenino'")))
+
+
+proc_elsoc %>%
+  dplyr::mutate(ingreso = car::recode(ingreso, recodes = c("-888 = NA; -999 = NA")))
+
+
+```
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+```{r eval=TRUE, include=TRUE, message=FALSE, warning=FALSE}
+proc_elsoc <- proc_elsoc %>% 
+  dplyr::mutate(sexo = car::recode(sexo,
+                                   recodes = c("'Hombre' = 'Masculino'; 'Mujer' = 'Femenino'")),
+                ingreso = car::recode(ingreso, 
+                                      recodes = c("-888 = NA; -999 = NA")))
+
+proc_elsoc
+```
+
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+```{r eval=TRUE, include=TRUE, message=FALSE}
+# Altruismo y confianza en carabineros conviertiendolos a factor
+
+proc_elsoc <- proc_elsoc %>%
+  dplyr::mutate(altruismo = car::recode(altruismo,
+                                        recodes = c("1 = 'La mayoria de las veces tratan de ayudar a los demas';
+                                              2 = 'La mayoria de las veces se preocupan solo de si mismas';
+                                              3 = 'Depende';
+                                              -666 = NA;
+                                              -777 = NA;
+                                              -888 = NA;
+                                              -999 = NA"),
+                                        as.factor = TRUE)) # transformar a factor
+
+```
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+
+```{r eval=TRUE, include=TRUE, message=TRUE, collapse=FALSE}
+
+proc_elsoc <- proc_elsoc %>%
+  dplyr::mutate(confianza_carab = car::recode(confianza_carab,
+                                              recodes = c("1 = 'Nada'; 2 = 'Poca'; 3 = 'Algo'; 4 = 'Bastante'; 5 = 'Mucha'; -666 = NA; -777 = NA; -888 = NA; -999 = NA"),
+                                              as.factor = TRUE, # transformar a factor
+                                              levels = c("Nada",
+                                                         "Poca",
+                                                         "Algo",
+                                                         "Bastante",
+                                                         "Mucha"))) # asignar niveles
+```
+
+---
+# 4.4 Casos pérdidos
+
+.bold[Identificar valores nulos] en el conjunto de datos o una variable en específico.
+
+```{r eval=FALSE, include=TRUE, collapse=FALSE}
+is.na(proc_elsoc)
+
+is.na(proc_elsoc$ingreso)
+```
+
+.bold[Contar] la cantidad de valores pérdidos. 
+
+```{r eval=TRUE, include=TRUE, collapse=FALSE}
+sum(is.na(proc_elsoc))
+```
+
+---
+# 4.4 Casos pérdidos
+
+Sumar valores pérdidos .bold[por variable.]
+
+```{r collapse=FALSE}
+colSums(is.na(proc_elsoc))
+```
+
+.bold[Remover] casos pérdidos.
+
+```{r collapse=FALSE}
+proc_elsoc <- na.omit(proc_elsoc)
+
+```
+
+
+
+---
+# 5. Transformación de variables
+
+La función `mutate()` de `dplyr` nos permite .bold[crear] nuevas nuevas manteniendo las originales.
+
+```{r collapse=FALSE}
+proc_elsoc <- proc_elsoc %>% dplyr::mutate(ano = 2022)
+
+```
+
+---
+# 5. Transformación de variables
+
+#### Transformar variables con `case_when()`
+
+```{r eval=TRUE, include=TRUE, collapse=FALSE}
+proc_elsoc <- proc_elsoc %>%
+  dplyr::mutate(tramo_edad = case_when(edad <= 29 ~ "Jovenes",
+                                       edad >= 30 & edad <= 59 ~ "Adultos",
+                                       edad >= 60 ~ "Adutos mayores"))
+
+proc_elsoc <- proc_elsoc %>% 
+  dplyr::mutate(tramo_ingreso = case_when(ingreso <= 250000 ~ "Tramo 1",
+                                          ingreso > 250000 & ingreso <= 500000 ~ "Tramo 2",
+                                          ingreso > 500000 & ingreso <= 750000 ~ "Tramo 3",
+                                          ingreso > 750000 & ingreso <= 1000000 ~ "Tramo 4",
+                                          ingreso > 1000000 ~ "Tramo 5"))
+
+
+```
+
+---
+# 5. Transformar variables
+
+#### Transformar variables con `if_else()`
+
+```{r eval=TRUE, collapse=FALSE}
+proc_elsoc <- proc_elsoc %>%
+  dplyr::mutate(ingreso_minimo = if_else(ingreso < 410000, "debajo minimo", "sobre minimo"))
+
+select(proc_elsoc, ingreso, ingreso_minimo) #veamosla!
+
+```
+---
+
+# 6. Guardar y exportar
+
+Este último paso es bastante sencillo, solo debemos especificar la base que queremos guadar y su ruta, en este caso la carpeta .bold[Output]:
+
+```{r include=FALSE}
+saveRDS(proc_elsoc, file= "/Users/macbookair/Documents/GitHub/taller/output/datos_proc.Rdata")
+```
+
+```{r eval=FALSE, include=TRUE}
+saveRDS(proc_elsoc, file = "output/datos_proc.Rdata")
+```
+
+---
+class: inverse middle center, slideInRight
+background-size: 12%
+background-position: 99% 1%
+
+## 3. Análisis descriptivo de datos
+
+---
+# Análisis de datos
+
+Al igual que antes, seguiremos uno flujo:
+
+.content-box-red.large[
+1. Instalar y cargar librerías
+2. Importar datos
+3. Explorar datos
+4. Análisis
+      + variables categóricas
+      + variables númericas
+
+]
+
+---
+
+# 1. Instalar y cargar librerías
+
+Si ya tenemos instalado `pacman` solo hay que cargarlo
+
+```{r eval=FALSE, include=TRUE}
+library(pacman)
+```
+
+En este taller, usaremos estos paquetes: `tidyverse`, `dplyr`, `psych`, `sjmisc` y `crosstable`.
+
+```{r echo=TRUE, eval=TRUE, message=FALSE, include=TRUE}
+pacman::p_load(tidyverse, # colección de paquetes para manipulación de datos
+               dplyr, # para manipular datos
+               psych, # para analizar datos
+               sjmisc, # para analizar datos
+               crosstable) # para tablas de contingencia
+
+options(scipen = 999) # para desactivar notacion cientifica
+rm(list = ls()) # para limpiar el entorno de trabajo
+
+```
+---
+
+# 2. Importar datos
+
+Cargamos nuestros datos procesados provenientes de la carpeta .bold[Output].
+
+```{r eval=FALSE, include=TRUE}
+
+datos_proc <- readRDS("output/datos_proc.Rdata")
+
+```
+
+```{r include=FALSE}
+datos_proc <- readRDS("/Users/macbookair/Documents/GitHub/taller/output/datos_proc.Rdata")
+
+```
+---
+
+# 3. Explorar datos
+
+Siempre es recomendable explorar los datos antes de hacer cualquier análisis: 
+
+```{r eval = T, include=TRUE, message=FALSE, collapse=FALSE}
+names(datos_proc) # Nombre de columnas
+dim(datos_proc) # Dimensiones
+
+```
+---
+# 3. Explorar datos
+
+```{r eval = T, include=TRUE, message=FALSE, collapse=FALSE}
+str(datos_proc) # Estructura de los datos (las clases y categorias de repuesta)
+
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+### a) Frecuencias absolutas
+
+```{r eval=FALSE, include=TRUE}
+
+table(datos_proc$tramo_ingreso)
+
+```
+
+
+### b) Frecuencias relativas
+
+```{r eval=FALSE, include=TRUE}
+(freq_table1 <-table(datos_proc$tramo_ingreso))
+prop.table(freq_table1)*100
+```
+
+---
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+### c) Frecuencias acumuladas
+
+```{r eval=FALSE, include=TRUE}
+(freq_table2 <- table(datos_proc$tramo_ingreso))
+(freq_table3 <- prop.table(freq_table2)*100)
+cumsum(freq_table3)
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+Unir en una tabla
+
+```{r eval=FALSE, include=TRUE}
+tbl3 <- table(datos_proc$tramo_ingreso)
+cbind(Freq=tbl3, relat = prop.table(tbl3)*100, Cum = cumsum(tbl3))
+
+```
+
+Con `frq()` de `sjmisc` 
+
+```{r eval=FALSE, include=TRUE}
+sjmisc::frq(datos_proc$tramo_ingreso)
+
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+### Tablas de contingencia
+
+```{r eval=FALSE, include=TRUE}
+
+crosstable(datos_proc, cols = sexo, by = tramo_edad, total = "row")
+
+crosstable(datos_proc, cols = sexo, by = tramo_edad, total = "column")
+
+crosstable(datos_proc, cols = sexo, by = tramo_edad, total = "both")
+
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.2 Variables númericas
+
+### a) Con `summary`
+
+```{r eval=FALSE, include=TRUE, collapse=FALSE}
+
+summary(datos_proc$ingreso)
+
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.2 Variables númericas
+
+### b) Con `psych`
+
+```{r eval=FALSE, include=TRUE, collapse=FALSE}
+
+psych::describe(datos_proc$ingreso)
+
+psych::describe(datos_proc$ingreso,
+                quant = c(.25,.75),
+                IQR = T)
+
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.2 Variables númericas
+
+### c) Con `dplyr`
+
+```{r eval=FALSE, include=TRUE}
+
+datos_proc %>% 
+  summarise(media = mean(ingreso),
+            mediana = median(ingreso),
+            q1 = quantile(ingreso, probs = .25),
+            q2 = quantile(ingreso, probs = .75),
+            rango = max(ingreso) - min(ingreso),
+            desviacion_estandar = sd(ingreso),
+            varianza = var(ingreso),
+            coef_variacion = sd(ingreso)/mean(ingreso))
+
+```
+
+---
+class: middle hide-logo title
+
+.pull-left-narrow[
+.espaciosimple[
+.tiny[]
+]
+
+![:scale 90%](hero.jpg)
+<br><br><br><br><br>
+]
+
+.pull-right-wide[
+.right[
+
+.content-box-red[
+.center[
+
+## Introducción a la manipulación y análisis descriptivo de datos en R
+
+.medium[
+
+
+]
+]
+]
+
+.medium[.red[#### Aprendiendo Metodología por Valentina]]
+
+
+----
+.espaciosimplelineas[
+
+.medium[.bold[Andreas Laffert]] .tiny[.blue[(_andreas.laffert@ug.uchile.cl_)]]
+
+.medium[.bold[Daniela Olivares]] .tiny[.blue[(_danielaolivarescollio@gmail.com_)]]
+
+
+]
+
+
+.small[
+Junio 2023, Santiago.
+
+  ]
+
+]
+]
+
+</br>
+.left.tiny[Taller N° 7: Talleres 2023 Aprendiendo Metodología por Valentina]

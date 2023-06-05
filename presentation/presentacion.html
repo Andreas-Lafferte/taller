@@ -26,11 +26,6 @@
 
 
 
-
-
-
-
-
 class: middle hide-logo title
 
 <style>.xe__progress-bar__container {
@@ -111,11 +106,10 @@ class: inverse middle center, slideInRight
 
 
 .medium[ 
-1. 
-2. 
-3. 
-4. 
-5. 
+1. Flujo de trabajo reproducible
+2. Procesamiento, limpieza y manipulación de datos
+3. Análisis descriptivo de datos
+ 
 ]
 
 
@@ -124,9 +118,923 @@ class: inverse middle center, slideInRight
 background-size: 12%
 background-position: 99% 1%
 
-## 1. 
+## 1. Flujo de trabajo reproducible en R
 
 ---
+# Flujo de trabajo reproducible
+
+En este curso trabajaremos R con un flujo de trabajo reproducible, basado en el sistema [IPO](https://lisa-coes.com/ipo-data/). Lleva este nombre por el sistema de carpetas que se implementan: **I**nput, **P**rocesamiento y **O**utput. 
+
+&lt;img src="../images/image (2).png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+# Reproducibilidad
+
+Por temas de orden y reproducibilidad, en este curso vamos a separar en dos momentos el trabajo con datos, y dos archivos de código correspondientes:
+
+.pull-left[
+
+.content-box-red.large[
+
+.red.bold.center[Preparación]
+
+Corresponde a lo que se conoce generalmente como “limpieza”, es decir, realizar las modificaciones necesarias a los datos para poder efectuar los análisis.
+
+]
+
+
+]
+
+.pull-right[
+
+.content-box-red.large[
+
+.red.bold.center[Análisis]
+
+Se relaciona con análisis estadísticos, en este caso descriptivos, asociados a las preguntas e hipótesis de investigación.
+
+
+]
+
+
+]
+
+
+
+---
+# Reproducibilidad
+
+.center[
+![:scale 80%](../images/image.png)
+]
+
+---
+# Reproducibilidad... ¿pero cómo?
+
+Mediante los **Rproject**. Los proyectos en R serán el centro a partir del cual estaremos trabajando el resto de archivos incluidos en nuestro trabajo con los datos (Input, Procesamiento y Output). 
+
+&lt;img src="../images/cora1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: inverse middle center, slideInRight
+background-size: 12%
+background-position: 99% 1%
+
+## 2. Procesamiento, limpieza y manipulación de datos
+
+---
+
+# Procesamiento de datos
+
+&lt;br&gt;
+
+--
+
+.pull-left[
+
+.box-4.xlarge.sp-after-half[
+Comúnmente, un procesamiento de datos comprende una serie de etapas que van desde la importación de los datos, la limpieza, derivación de nuevas variables, hasta guardar y exportar. 
+
+]
+]
+
+&lt;br&gt;&lt;br&gt; 
+
+--
+.pull-right[
+
+.box-5.xlarge.sp-after-half[
+Pero en R, para poder realizar todo lo anterior **primero debemos instalar y cargar los paquetes y librerías**.
+
+]
+]
+
+
+
+---
+
+# Procesamiento de datos
+
+El flujo que seguiremos es el siguiente:
+
+.content-box-red.large[
+1. Instalar y cargar librerías
+2. Importar datos
+3. Explorar datos
+4. Limpiar datos
+      + seleccionar y filtrar
+      + recodificar
+      + etiquetar
+      + tratamiento de casos perdidos (identificar y remover missing values)
+5. Transformar variables
+6. Guardar y exportar datos procesados
+
+]
+
+
+---
+# 1. Instalar y cargar librerías
+
+Los paquetes son un conjunto de funciones o herramientas que pueden ser usadas en R.
+
+Los directorios de R donde se almacenan se llaman librerías. 
+
+La lógica es instalar paquetes y luego cargar (o llamar) librerías cada vez que las usemos.
+
+Usualmente para cargar paquetes lo hacemos de la siguiente manera:
+
+
+```r
+install.packages("paquete")
+library(paquete)
+```
+---
+# 1. Instalar y cargar librerías
+
+Pero en esta ocasión utilizaremos un paquete llamado **pacman**, que facilita y agiliza la lectura (instalación y carga):
+
+
+```r
+install.packages("pacman")
+library(pacman)
+```
+
+En este taller, usaremos seis paquetes: `pacman`, `tidyverse`, `dplyr`, `haven`, `car`, `magrittr`.
+
+
+
+```r
+pacman::p_load(tidyverse, # colección de paquetes para manipulación de datos
+               dplyr, # para manipular datos
+               haven, # para importar datos
+               car, # para recodificar datos
+               magrittr)# para manipular datos
+```
+
+---
+# 1. Instalar y cargar librerías
+
+También es recomendable configurar ciertas opciones de la sesión:
+
+
+```r
+options(scipen = 999) # para desactivar notacion cientifica
+rm(list = ls()) # para limpiar el entorno de trabajo
+```
+
+
+---
+# 2. Importar datos
+
+La estructura general para importar datos es la siguiente:
+
+`read_*("ruta_hacia_archivo/nombre_archivo.*")`
+
+
+```r
+elsoc_2022 &lt;- read_sav("ELSOC W06 v1.0 SPSS.sav")  # No funciona
+
+elsoc_2022 &lt;- read_sav("input/data/ELSOC W06 v1.0 SPSS.sav") # No funciona
+
+elsoc_2022 &lt;- read_sav("input/data/ELSOC_W06_v1.0_SPSS.sav") # Si funciona!
+```
+
+
+---
+# 3. Explorar datos
+
+En R, las funciones más comunes para explorar datos son: 
+
+
+```r
+names(elsoc_2022) # Nombre de columnas
+```
+
+```
+##  [1] "m0_sexo" "m0_edad" "m36"     "c03"     "c05_03"  "c25"     "c02"    
+##  [8] "c15"     "f05_01"  "m13"     "comuna"  "region"  "c18_11"  "d01_01" 
+## [15] "d04_01"
+```
+
+```r
+dim(elsoc_2022) # Dimensiones
+```
+
+```
+## [1] 1000   15
+```
+---
+# 3. Explorar datos
+
+
+```r
+str(elsoc_2022) # Estructura de los datos (las clases y categorias de repuesta)
+```
+
+```
+## tibble [1,000 × 15] (S3: tbl_df/tbl/data.frame)
+##  $ m0_sexo: chr [1:1000] "Hombre" "Hombre" "Mujer" "Mujer" ...
+##   ..- attr(*, "format.spss")= chr "A6"
+##  $ m0_edad: num [1:1000] 66 38 70 24 56 52 64 24 32 60 ...
+##   ..- attr(*, "label")= chr "Edad del entrevistado"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ m36    : num [1:1000] 1 2 8 4 4 4 7 4 4 5 ...
+##   ..- attr(*, "label")= chr "Estado civil del entrevistado"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ c03    : num [1:1000] 2 2 1 2 2 2 2 2 2 2 ...
+##   ..- attr(*, "label")= chr "Altruismo Social Generalizado"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ c05_03 : num [1:1000] 3 3 3 5 3 1 5 3 3 4 ...
+##   ..- attr(*, "label")= chr "Grado de confianza: Carabineros"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ c25    : num [1:1000] 1 3 1 1 3 3 1 4 1 3 ...
+##   ..- attr(*, "label")= chr "Preferencia entre Autoritarismo y Democracia"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ c02    : num [1:1000] 2 2 2 2 2 2 2 2 2 2 ...
+##   ..- attr(*, "label")= chr "Confianza Social Generalizada"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ c15    : num [1:1000] 12 12 5 10 7 10 10 3 12 11 ...
+##   ..- attr(*, "label")= chr "Autoubicacion escala izquierda-derecha"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ f05_01 : num [1:1000] 3 3 1 5 NA 1 1 NA 1 4 ...
+##   ..- attr(*, "label")= chr "Justificacion de violencia: Perseguir y golpear a delincuentes"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ m13    : num [1:1000] 1200000 500000 NA NA 500000 NA NA 530000 790000 400000 ...
+##   ..- attr(*, "label")= chr "Ingreso mensual entrevistado (monto)"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ comuna : chr [1:1000] "El Bosque" "Concepcion" "Coronel" "Valparaiso" ...
+##   ..- attr(*, "label")= chr "Comuna"
+##   ..- attr(*, "format.spss")= chr "A20"
+##  $ region : chr [1:1000] "Metropolitana" "Bio Bio" "Bio Bio" "Valparaiso" ...
+##   ..- attr(*, "label")= chr "Region"
+##   ..- attr(*, "format.spss")= chr "A18"
+##  $ c18_11 : num [1:1000] 4 5 5 4 2 5 4 4 4 4 ...
+##   ..- attr(*, "label")= chr "Grado de acuerdo: Las diferencias de ingreso son demasiado grandes"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ d01_01 : num [1:1000] 5 5 5 0 5 1 4 4 5 5 ...
+##   ..- attr(*, "label")= chr "Estatus Social Subjetivo: Donde se ubicaria ud. en la sociedad chilena"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ d04_01 : num [1:1000] 5000000 3000000 5000000 3000000 3000000 380000 3000000 2000000 5000000 2500000 ...
+##   ..- attr(*, "label")= chr "Salario justo: Gerente gran empresa"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+```
+
+---
+# 4. Limpieza de datos
+
+Pero antes...
+
+.pull-left[
+
+![:scale 90%](../images/dplyr.jpg)
+
+
+]
+
+.pull-right[
+
+`dplyr()` está orientado a escribir código como la escritura normal, es decir, **de izquierda a derecha**. 
+
+Generalmente, la estructura de `dplyr()` es:
+
+
+`dplyr::funcion(datos, variable1, variable2, variable_n)`
+
+]
+
+---
+## 4.1 Seleccionar
+
+Hay distintas formas de usar `select()`
+
+Por .bold[indexación o ubicación] en la base de datos:
+
+
+```r
+elsoc_2022 %&gt;% dplyr::select(1, 2) # la primera y la segunda columna
+
+elsoc_2022 %&gt;% dplyr::select(1:4) # la primera hasta la cuarta columna
+
+elsoc_2022 %&gt;% dplyr::select(c(1, 4, 5)) # la primera, la cuarta y la quinta columna
+```
+
+---
+## 4.1 Seleccionar
+
+Por .bold[nombre] de la variable/columna. 
+
+
+```r
+elsoc_2022 %&gt;% 
+  dplyr::select(m0_sexo, m0_edad, m13)
+```
+
+.bold[Renombrar las variables] al momento de seleccionarlas
+
+
+```r
+elsoc_2022 %&gt;% 
+  dplyr::select(sexo = m0_sexo, edad = m0_edad, ingreso = m13)
+```
+
+Para .bold[reordenar].
+
+
+```r
+elsoc_2022 %&gt;% 
+  dplyr::select(m0_edad, m0_sexo, c25, m13)
+```
+
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+
+```r
+proc_elsoc &lt;- elsoc_2022 %&gt;% 
+  dplyr::select(edad = m0_edad,
+                sexo = m0_sexo,
+                ingreso = m13,
+                altruismo = c03,
+                confianza_carab = c05_03)
+
+proc_elsoc
+```
+
+```
+## # A tibble: 1,000 × 5
+##     edad sexo   ingreso altruismo confianza_carab
+##    &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;           &lt;dbl&gt;
+##  1    66 Hombre 1200000         2               3
+##  2    38 Hombre  500000         2               3
+##  3    70 Mujer       NA         1               3
+##  4    24 Mujer       NA         2               5
+##  5    56 Mujer   500000         2               3
+##  6    52 Mujer       NA         2               1
+##  7    64 Mujer       NA         2               5
+##  8    24 Mujer   530000         2               3
+##  9    32 Mujer   790000         2               3
+## 10    60 Mujer   400000         2               4
+## # … with 990 more rows
+```
+
+
+
+---
+# 4.2 Filtrar
+
+Usamos `filter()` .bold[especificando las condiciones que queremos aplicar]
+
+
+```r
+proc_elsoc %&gt;% 
+  dplyr::filter(autor_democ == 1)
+```
+
+También podemos agregar .bold[muchas condiciones] para filtrar nuestros datos.
+
+
+
+```r
+proc_elsoc %&gt;% 
+  dplyr::filter(autor_democ == 1 &amp; edad &gt;= 25)
+```
+
+¿Y si son character o factor?
+
+
+```r
+proc_elsoc %&gt;% 
+  dplyr::filter(sexo == "Mujer")
+```
+
+---
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+
+```r
+proc_elsoc &lt;- proc_elsoc %&gt;% dplyr::filter(edad &gt;= 25)
+
+proc_elsoc
+```
+
+```
+## # A tibble: 980 × 5
+##     edad sexo   ingreso altruismo confianza_carab
+##    &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;           &lt;dbl&gt;
+##  1    66 Hombre 1200000         2               3
+##  2    38 Hombre  500000         2               3
+##  3    70 Mujer       NA         1               3
+##  4    56 Mujer   500000         2               3
+##  5    52 Mujer       NA         2               1
+##  6    64 Mujer       NA         2               5
+##  7    32 Mujer   790000         2               3
+##  8    60 Mujer   400000         2               4
+##  9    43 Hombre 1000000         2               4
+## 10    77 Mujer       NA         2               5
+## # … with 970 more rows
+```
+
+---
+# 4.3 Recodificar
+
+Hay múltiples formas de recodificar en R, pero en este ejemplo trabajaremos con el comando `recode()` del paquete `car`. Esto, mediante `mutate()`
+
+El comando `recode()` generalmente sigue esta estructura:
+
+`car::recode(datos$variable, recodes = c('valor_orig1=nuevo_valor1;valor_org2=nuevo_valor2'))`
+
+
+
+```r
+proc_elsoc %&gt;%
+  dplyr::mutate(sexo = car::recode(sexo, recodes = c("'Hombre' = 'Masculino';
+                                                   'Mujer' = 'Femenino'")))
+
+
+proc_elsoc %&gt;%
+  dplyr::mutate(ingreso = car::recode(ingreso, recodes = c("-888 = NA; -999 = NA")))
+```
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+
+```r
+proc_elsoc &lt;- proc_elsoc %&gt;% 
+  dplyr::mutate(sexo = car::recode(sexo,
+                                   recodes = c("'Hombre' = 'Masculino'; 'Mujer' = 'Femenino'")),
+                ingreso = car::recode(ingreso, 
+                                      recodes = c("-888 = NA; -999 = NA")))
+
+proc_elsoc
+```
+
+```
+## # A tibble: 980 × 5
+##     edad sexo      ingreso altruismo confianza_carab
+##    &lt;dbl&gt; &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;           &lt;dbl&gt;
+##  1    66 Masculino 1200000         2               3
+##  2    38 Masculino  500000         2               3
+##  3    70 Femenino       NA         1               3
+##  4    56 Femenino   500000         2               3
+##  5    52 Femenino       NA         2               1
+##  6    64 Femenino       NA         2               5
+##  7    32 Femenino   790000         2               3
+##  8    60 Femenino   400000         2               4
+##  9    43 Masculino 1000000         2               4
+## 10    77 Femenino       NA         2               5
+## # … with 970 more rows
+```
+
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+
+```r
+# Altruismo y confianza en carabineros conviertiendolos a factor
+
+proc_elsoc &lt;- proc_elsoc %&gt;%
+  dplyr::mutate(altruismo = car::recode(altruismo,
+                                        recodes = c("1 = 'La mayoria de las veces tratan de ayudar a los demas';
+                                              2 = 'La mayoria de las veces se preocupan solo de si mismas';
+                                              3 = 'Depende';
+                                              -666 = NA;
+                                              -777 = NA;
+                                              -888 = NA;
+                                              -999 = NA"),
+                                        as.factor = TRUE)) # transformar a factor
+```
+---
+
+.box-inv-4.mlarge.sp-after[
+.bold[APLIQUEMOS CONOCIMIENTOS]] 
+
+
+
+```r
+proc_elsoc &lt;- proc_elsoc %&gt;%
+  dplyr::mutate(confianza_carab = car::recode(confianza_carab,
+                                              recodes = c("1 = 'Nada'; 2 = 'Poca'; 3 = 'Algo'; 4 = 'Bastante'; 5 = 'Mucha'; -666 = NA; -777 = NA; -888 = NA; -999 = NA"),
+                                              as.factor = TRUE, # transformar a factor
+                                              levels = c("Nada",
+                                                         "Poca",
+                                                         "Algo",
+                                                         "Bastante",
+                                                         "Mucha"))) # asignar niveles
+```
+
+---
+# 4.4 Casos pérdidos
+
+.bold[Identificar valores nulos] en el conjunto de datos o una variable en específico.
+
+
+```r
+is.na(proc_elsoc)
+
+is.na(proc_elsoc$ingreso)
+```
+
+.bold[Contar] la cantidad de valores pérdidos. 
+
+
+```r
+sum(is.na(proc_elsoc))
+```
+
+```
+## [1] 454
+```
+
+---
+# 4.4 Casos pérdidos
+
+Sumar valores pérdidos .bold[por variable.]
+
+
+```r
+colSums(is.na(proc_elsoc))
+```
+
+```
+##            edad            sexo         ingreso       altruismo confianza_carab 
+##               0               0             451               3               0
+```
+
+.bold[Remover] casos pérdidos.
+
+
+```r
+proc_elsoc &lt;- na.omit(proc_elsoc)
+```
+
+
+
+---
+# 5. Transformación de variables
+
+La función `mutate()` de `dplyr` nos permite .bold[crear] nuevas nuevas manteniendo las originales.
+
+
+```r
+proc_elsoc &lt;- proc_elsoc %&gt;% dplyr::mutate(ano = 2022)
+```
+
+---
+# 5. Transformación de variables
+
+#### Transformar variables con `case_when()`
+
+
+```r
+proc_elsoc &lt;- proc_elsoc %&gt;%
+  dplyr::mutate(tramo_edad = case_when(edad &lt;= 29 ~ "Jovenes",
+                                       edad &gt;= 30 &amp; edad &lt;= 59 ~ "Adultos",
+                                       edad &gt;= 60 ~ "Adutos mayores"))
+
+proc_elsoc &lt;- proc_elsoc %&gt;% 
+  dplyr::mutate(tramo_ingreso = case_when(ingreso &lt;= 250000 ~ "Tramo 1",
+                                          ingreso &gt; 250000 &amp; ingreso &lt;= 500000 ~ "Tramo 2",
+                                          ingreso &gt; 500000 &amp; ingreso &lt;= 750000 ~ "Tramo 3",
+                                          ingreso &gt; 750000 &amp; ingreso &lt;= 1000000 ~ "Tramo 4",
+                                          ingreso &gt; 1000000 ~ "Tramo 5"))
+```
+
+---
+# 5. Transformar variables
+
+#### Transformar variables con `if_else()`
+
+
+```r
+proc_elsoc &lt;- proc_elsoc %&gt;%
+  dplyr::mutate(ingreso_minimo = if_else(ingreso &lt; 410000, "debajo minimo", "sobre minimo"))
+
+select(proc_elsoc, ingreso, ingreso_minimo) #veamosla!
+```
+
+```
+## # A tibble: 528 × 2
+##    ingreso ingreso_minimo
+##      &lt;dbl&gt; &lt;chr&gt;         
+##  1 1200000 sobre minimo  
+##  2  500000 sobre minimo  
+##  3  500000 sobre minimo  
+##  4  790000 sobre minimo  
+##  5  400000 debajo minimo 
+##  6 1000000 sobre minimo  
+##  7 1200000 sobre minimo  
+##  8  150000 debajo minimo 
+##  9  350000 debajo minimo 
+## 10  200000 debajo minimo 
+## # … with 518 more rows
+```
+---
+
+# 6. Guardar y exportar
+
+Este último paso es bastante sencillo, solo debemos especificar la base que queremos guadar y su ruta, en este caso la carpeta .bold[Output]:
+
+
+
+
+```r
+saveRDS(proc_elsoc, file = "output/datos_proc.Rdata")
+```
+
+---
+class: inverse middle center, slideInRight
+background-size: 12%
+background-position: 99% 1%
+
+## 3. Análisis descriptivo de datos
+
+---
+# Análisis de datos
+
+Al igual que antes, seguiremos uno flujo:
+
+.content-box-red.large[
+1. Instalar y cargar librerías
+2. Importar datos
+3. Explorar datos
+4. Análisis
+      + variables categóricas
+      + variables númericas
+
+]
+
+---
+
+# 1. Instalar y cargar librerías
+
+Si ya tenemos instalado `pacman` solo hay que cargarlo
+
+
+```r
+library(pacman)
+```
+
+En este taller, usaremos estos paquetes: `tidyverse`, `dplyr`, `psych`, `sjmisc` y `crosstable`.
+
+
+```r
+pacman::p_load(tidyverse, # colección de paquetes para manipulación de datos
+               dplyr, # para manipular datos
+               psych, # para analizar datos
+               sjmisc, # para analizar datos
+               crosstable) # para tablas de contingencia
+
+options(scipen = 999) # para desactivar notacion cientifica
+rm(list = ls()) # para limpiar el entorno de trabajo
+```
+---
+
+# 2. Importar datos
+
+Cargamos nuestros datos procesados provenientes de la carpeta .bold[Output].
+
+
+```r
+datos_proc &lt;- readRDS("output/datos_proc.Rdata")
+```
+
+
+---
+
+# 3. Explorar datos
+
+Siempre es recomendable explorar los datos antes de hacer cualquier análisis: 
+
+
+```r
+names(datos_proc) # Nombre de columnas
+```
+
+```
+## [1] "edad"            "sexo"            "ingreso"         "altruismo"      
+## [5] "confianza_carab" "ano"             "tramo_edad"      "tramo_ingreso"  
+## [9] "ingreso_minimo"
+```
+
+```r
+dim(datos_proc) # Dimensiones
+```
+
+```
+## [1] 528   9
+```
+---
+# 3. Explorar datos
+
+
+```r
+str(datos_proc) # Estructura de los datos (las clases y categorias de repuesta)
+```
+
+```
+## tibble [528 × 9] (S3: tbl_df/tbl/data.frame)
+##  $ edad           : num [1:528] 66 38 56 32 60 43 59 44 51 45 ...
+##   ..- attr(*, "label")= chr "Edad del entrevistado"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ sexo           : chr [1:528] "Masculino" "Masculino" "Femenino" "Femenino" ...
+##   ..- attr(*, "format.spss")= chr "A6"
+##  $ ingreso        : num [1:528] 1200000 500000 500000 790000 400000 1000000 1200000 150000 350000 200000 ...
+##   ..- attr(*, "label")= chr "Ingreso mensual entrevistado (monto)"
+##   ..- attr(*, "format.spss")= chr "F8.2"
+##  $ altruismo      : Factor w/ 3 levels "Depende","La mayoria de las veces se preocupan solo de si mismas",..: 2 2 2 2 2 2 2 2 3 2 ...
+##  $ confianza_carab: Factor w/ 5 levels "Nada","Poca",..: 3 3 3 3 4 4 2 4 2 4 ...
+##  $ ano            : num [1:528] 2022 2022 2022 2022 2022 ...
+##  $ tramo_edad     : chr [1:528] "Adutos mayores" "Adultos" "Adultos" "Adultos" ...
+##  $ tramo_ingreso  : chr [1:528] "Tramo 5" "Tramo 2" "Tramo 2" "Tramo 4" ...
+##  $ ingreso_minimo : chr [1:528] "sobre minimo" "sobre minimo" "sobre minimo" "sobre minimo" ...
+##  - attr(*, "na.action")= 'omit' Named int [1:452] 3 5 6 10 11 12 14 15 21 22 ...
+##   ..- attr(*, "names")= chr [1:452] "3" "5" "6" "10" ...
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+### a) Frecuencias absolutas
+
+
+```r
+table(datos_proc$tramo_ingreso)
+```
+
+
+### b) Frecuencias relativas
+
+
+```r
+(freq_table1 &lt;-table(datos_proc$tramo_ingreso))
+prop.table(freq_table1)*100
+```
+
+---
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+### c) Frecuencias acumuladas
+
+
+```r
+(freq_table2 &lt;- table(datos_proc$tramo_ingreso))
+(freq_table3 &lt;- prop.table(freq_table2)*100)
+cumsum(freq_table3)
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+Unir en una tabla
+
+
+```r
+tbl3 &lt;- table(datos_proc$tramo_ingreso)
+cbind(Freq=tbl3, relat = prop.table(tbl3)*100, Cum = cumsum(tbl3))
+```
+
+Con `frq()` de `sjmisc` 
+
+
+```r
+sjmisc::frq(datos_proc$tramo_ingreso)
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.1 Variables categóricas
+
+### Tablas de contingencia
+
+
+```r
+crosstable(datos_proc, cols = sexo, by = tramo_edad, total = "row")
+
+crosstable(datos_proc, cols = sexo, by = tramo_edad, total = "column")
+
+crosstable(datos_proc, cols = sexo, by = tramo_edad, total = "both")
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.2 Variables númericas
+
+### a) Con `summary`
+
+
+```r
+summary(datos_proc$ingreso)
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.2 Variables númericas
+
+### b) Con `psych`
+
+
+```r
+psych::describe(datos_proc$ingreso)
+
+psych::describe(datos_proc$ingreso,
+                quant = c(.25,.75),
+                IQR = T)
+```
+
+---
+
+# 4. Análisis descriptivo
+
+## 4.2 Variables númericas
+
+### c) Con `dplyr`
+
+
+```r
+datos_proc %&gt;% 
+  summarise(media = mean(ingreso),
+            mediana = median(ingreso),
+            q1 = quantile(ingreso, probs = .25),
+            q2 = quantile(ingreso, probs = .75),
+            rango = max(ingreso) - min(ingreso),
+            desviacion_estandar = sd(ingreso),
+            varianza = var(ingreso),
+            coef_variacion = sd(ingreso)/mean(ingreso))
+```
+
+---
+class: middle hide-logo title
+
+.pull-left-narrow[
+.espaciosimple[
+.tiny[]
+]
+
+![:scale 90%](hero.jpg)
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+]
+
+.pull-right-wide[
+.right[
+
+.content-box-red[
+.center[
+
+## Introducción a la manipulación y análisis descriptivo de datos en R
+
+.medium[
+
+
+]
+]
+]
+
+.medium[.red[#### Aprendiendo Metodología por Valentina]]
+
+
+----
+.espaciosimplelineas[
+
+.medium[.bold[Andreas Laffert]] .tiny[.blue[(_andreas.laffert@ug.uchile.cl_)]]
+
+.medium[.bold[Daniela Olivares]] .tiny[.blue[(_danielaolivarescollio@gmail.com_)]]
+
+
+]
+
+
+.small[
+Junio 2023, Santiago.
+
+  ]
+
+]
+]
+
+&lt;/br&gt;
+.left.tiny[Taller N° 7: Talleres 2023 Aprendiendo Metodología por Valentina]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
