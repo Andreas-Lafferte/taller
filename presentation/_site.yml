@@ -1,0 +1,21 @@
+name: "Presentaciones Proceso Tesis"
+output_dir: "."
+navbar:
+  title: "Presentaciones Proceso Tesis"
+  left:
+  - text: "Seminario de Grado (Oct. 2020)"
+    href: seminario-grado/ppt1-oct2020/Ppt1-Tema.html
+  - text: "Seminario de Grado (Dic. 2020)"
+    href: seminario-grado/ppt2-dic2020/ppt2.html
+  - text: "Seminario de Titulo I (May. 2021)"
+    href: seminario-titulo1/ppt3-may2021/ppt3.html
+  - text: "Seminario de Titulo I (Jun. 2021)"
+    href: seminario-titulo1/ppt4-jun2021/ppt4.html
+  - text: "Seminario de Titulo II (Abr. 2022)"
+    href: seminario-titulo2/ppt5-abril2022/ppt5-abril2022.html
+  - text: "Seminario OLES (Sept. 2022)"
+    href: seminario-titulo2/ppt6-sept2022/ppt6-sept2022.html
+  - text: "Examen Titulo (Nov. 2022)"
+    href: examen-titulo/ppt7-nov2022/ppt7-nov2022.html
+  html_document:
+    theme: yeti # yeti  spacelab simplex sandstone cosmo cerulean paper darkly flatly lumen readable

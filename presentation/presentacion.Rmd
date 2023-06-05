@@ -1,0 +1,122 @@
+---
+title: "Introducción a la manipulación y análisis descriptivo de datos en R"
+subtitle: "Aprendiendo Metodología por Valentina"
+author: ".small[Andreas Lafferte Tamayo & Daniela Olivares]"
+date: "January 2023"
+output:
+  xaringan::moon_reader:
+    includes:
+      after_body: insert-logo.html
+    lib_dir: libs
+    css: ["custom_2020.css"]
+    seal: false # esto omite title slide automática
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: '16:9'
+      beforeInit: "xaringan_custom/macros.js"
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+      navigation:
+        scroll: false #
+biblio-style: apalike
+lang: es-CL
+---
+
+
+```{r database, message=TRUE, warning=TRUE, include=FALSE, paged.print=TRUE}
+
+
+
+```
+
+
+
+
+```{r xaringanExtra1, include=FALSE}
+xaringanExtra::use_xaringan_extra(c("tile_view", "share_again", "scribble"))
+```
+
+class: middle hide-logo title
+
+```{r xaringanExtra2, echo = FALSE}
+xaringanExtra::use_progress_bar(color = "red", location = c("top"))
+```
+.pull-left-narrow[
+.espaciosimple[
+.tiny[]
+]
+
+![:scale 90%](hero.jpg)
+<br><br><br><br><br>
+]
+
+.pull-right-wide[
+.right[
+
+.content-box-red[
+.center[
+
+## Introducción a la manipulación y análisis descriptivo de datos en R
+
+.medium[
+
+
+]
+]
+]
+
+.medium[.red[#### Aprendiendo Metodología por Valentina]]
+
+
+----
+.espaciosimplelineas[
+
+.medium[.bold[Andreas Laffert]] .tiny[.blue[(_andreas.laffert@ug.uchile.cl_)]]
+
+.medium[.bold[Daniela Olivares]] .tiny[.blue[(_danielaolivarescollio@gmail.com_)]]
+
+
+]
+
+
+.small[
+Junio 2023, Santiago.
+
+  ]
+
+]
+]
+
+</br>
+.left.tiny[Taller N° 7: Talleres 2023 Aprendiendo Metodología por Valentina]
+
+---
+class: inverse middle center, slideInRight
+
+.medium[ 
+### Estructura de presentación
+]
+
+
+.medium[ 
+1. 
+2. 
+3. 
+4. 
+5. 
+]
+
+
+---
+class: inverse middle center, slideInRight
+background-size: 12%
+background-position: 99% 1%
+
+## 1. 
+
+---

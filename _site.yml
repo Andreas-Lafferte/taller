@@ -1,0 +1,9 @@
+name: "Presentaciones Aprendiendo Metodología por Valentina"
+output_dir: "."
+navbar:
+  title: "Presentaciones Aprendiendo Metodología por Valentina"
+  left:
+  - text: "Taller N°7 (Jun. 2023)"
+    href: presentation/presentacion.html
+  html_document:
+    theme: yeti # yeti  spacelab simplex sandstone cosmo cerulean paper darkly flatly lumen readable
